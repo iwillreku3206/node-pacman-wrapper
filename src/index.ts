@@ -4,6 +4,7 @@ import {
 	default as PacmanCommand,
 } from './PacmanCommand'
 import PacstrapCommand from './PacstrapCommand'
+import promisifyChildProcess from './utils/promisifyChildProcess'
 import ConstructorOptions from './_types/ConstructorOptions'
 import RunOptions from './_types/RunOptions'
 
@@ -39,7 +40,7 @@ export default class Pacman {
 		return new PacstrapCommand(this, mountPoint, packages)
 	}
 
-	install(packages: string[], runOptions?: RunOptions) {
+	async install(packages: string[], runOptions?: RunOptions) {
 		const command = this.makePacmanCommand(
 			{
 				operation: 'install',
@@ -48,20 +49,43 @@ export default class Pacman {
 		)
 
 		if (runOptions?.run) {
-			return command.run(runOptions)
+			const runner = command.run(runOptions)
+			return promisifyChildProcess(runner)
 		}
 
 		return command.toString()
 	}
 
-	refresh(force?: boolean, runOptions?: RunOptions) {
+	async refresh(force?: boolean, runOptions?: RunOptions) {
 		const command = this.makePacmanCommand({
 			operation: 'install',
 			options: [force ? 'forceRefresh' : 'refresh'],
 		})
 
 		if (runOptions?.run) {
-			return command.run(runOptions)
+			const runner = command.run(runOptions)
+			return promisifyChildProcess(runner)
+		}
+
+		return command.toString()
+	}
+
+	async remove(
+		packages: string[],
+		cleanUnneeded?: boolean,
+		runOptions?: RunOptions
+	) {
+		const command = this.makePacmanCommand(
+			{
+				operation: 'remove',
+				options: cleanUnneeded ? ['unneeded'] : [],
+			},
+			packages.join(' ')
+		)
+
+		if (runOptions?.run) {
+			const runner = command.run(runOptions)
+			return promisifyChildProcess(runner)
 		}
 
 		return command.toString()
