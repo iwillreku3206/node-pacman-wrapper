@@ -18,6 +18,8 @@ export default abstract class Command {
 		if (!this.pacman.canRun) throw new Error('Insufficient permissions to run.')
 
 		const args = this.toArgs()
+		console.log(`Running: ${this.command} ${args}`)
+
 		const proc = child_process.spawn(
 			this.command === 'pacman'
 				? this.pacman.pacmanDirectory
