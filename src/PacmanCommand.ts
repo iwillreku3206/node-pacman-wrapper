@@ -84,6 +84,7 @@ export type CommandConstructorOptions =
 	| OtherCommandConstuctorOptions
 
 export default class PacmanCommand extends Command {
+	command: 'pacman' | 'pacstrap' = 'pacman'
 	shorthandOpts: (Option | undefined)[] | undefined
 	opts: (Option | undefined)[] | undefined
 	operation: Operation
@@ -164,10 +165,12 @@ export default class PacmanCommand extends Command {
 	}
 
 	toString() {
-		return `${this.pacman.pacmanDirectory} -${
-			this.operation.shortcut
-		}${this.shorthandOpts?.map((o) => o?.shortcut || '').join('')} ${this.opts
-			?.map((o) => o?.argument || '')
-			.join(' ')} ${this.data}`
+		return `${this.pacman.pacmanDirectory} ${this.toArgs()}`
+	}
+
+	toArgs() {
+		return `-${this.operation.shortcut}${
+			this.shorthandOpts?.map((o) => o?.shortcut || '').join('') || ''
+		} ${this.opts?.map((o) => o?.argument || '').join(' ') || ''} ${this.data}`
 	}
 }
