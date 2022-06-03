@@ -19,6 +19,7 @@ export default abstract class Command {
 
 		const args = this.toArgs()
 		console.log(`Running: ${this.command} ${args}`)
+		console.log(`Args: ${JSON.stringify(args)}`)
 
 		const proc = child_process.spawn(
 			this.command === 'pacman'
