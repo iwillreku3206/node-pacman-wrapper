@@ -5,7 +5,8 @@ import {
 	databaseOptions,
 	fileOption,
 	fileOptions,
-	operation,
+	noop,
+	Operation,
 	operations,
 	Option,
 	queryOption,
@@ -14,6 +15,7 @@ import {
 	removeOptions,
 	syncOption,
 	syncOptions,
+	transactionOption,
 	transactionOptions,
 	upgradeOption,
 	upgradeOptions,
@@ -27,10 +29,11 @@ interface CommonnCommandConstructorOptions {
 interface SyncCommandConstructorOptions
 	extends CommonnCommandConstructorOptions {
 	operation: 'sync' | 'install'
-	options?:
-		| (keyof typeof transactionOptions)[]
-		| (keyof typeof upgradeOptions)[]
-		| (keyof typeof syncOptions)[]
+	options?: (
+		| keyof typeof transactionOptions
+		| keyof typeof upgradeOptions
+		| keyof typeof syncOptions
+	)[]
 }
 
 interface RemoveCommandConstructorOptions
@@ -82,7 +85,7 @@ export type CommandConstructorOptions =
 export default class Command {
 	shorthandOpts: (Option | undefined)[] | undefined
 	opts: (Option | undefined)[] | undefined
-	operation: string
+	operation: Operation
 	data: string | undefined
 	pacman: Pacman
 
@@ -92,28 +95,38 @@ export default class Command {
 		data?: string
 	) {
 		const opts = options.options
-		this.operation = options.operation
+		this.operation = operations[options.operation]
 		this.data = data
 		this.pacman = pacman
 
 		this.shorthandOpts = opts
 			?.map((opt) => {
-				let returnOption
+				let returnOption = noop
 
-				if (this.operation === 'database')
+				if (options.operation === 'database')
 					returnOption = databaseOption(opt as keyof typeof databaseOptions)
-				if (this.operation === 'files')
-					returnOption = fileOption(opt as keyof typeof fileOption)
-				if (this.operation === 'install')
-					returnOption = syncOption(opt as keyof typeof syncOption)
-				if (this.operation === 'sync')
-					returnOption = syncOption(opt as keyof typeof syncOption)
-				if (this.operation === 'query')
-					returnOption = queryOption(opt as keyof typeof fileOption)
-				if (this.operation === 'remove')
-					returnOption = removeOption(opt as keyof typeof fileOption)
-				if (this.operation === 'upgrade')
-					returnOption = upgradeOption(opt as keyof typeof fileOption)
+
+				if (options.operation === 'files')
+					returnOption = fileOption(opt as keyof typeof fileOptions)
+
+				if (options.operation === 'install' || options.operation === 'sync')
+					returnOption =
+						syncOption(opt as keyof typeof syncOption) ||
+						transactionOption(opt as keyof typeof transactionOptions) ||
+						upgradeOption(opt as keyof typeof upgradeOptions)
+
+				if (options.operation === 'query')
+					returnOption = queryOption(opt as keyof typeof queryOptions)
+
+				if (options.operation === 'remove')
+					returnOption =
+						removeOption(opt as keyof typeof removeOptions) ||
+						transactionOption(opt as keyof typeof transactionOptions)
+
+				if (options.operation === 'upgrade')
+					returnOption =
+						upgradeOption(opt as keyof typeof upgradeOptions) ||
+						transactionOption(opt as keyof typeof transactionOptions)
 
 				return returnOption
 			})
@@ -122,7 +135,7 @@ export default class Command {
 
 	toString() {
 		return `${this.pacman.pacmanDirectory} -${
-			operation(this.operation as keyof typeof operations).shortcut
+			this.operation.shortcut
 		}${this.shorthandOpts?.map((o) => o?.shortcut || '').join('')} ${this.data}`
 	}
 }

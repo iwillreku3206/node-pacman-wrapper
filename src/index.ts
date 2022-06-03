@@ -16,7 +16,7 @@ export default class Pacman {
 
 const cmd = new Command(
 	new Pacman(),
-	{ operation: 'install', options: ['refresh', 'search'] },
+	{ operation: 'install', options: ['refresh', 'nodeps'] },
 	'asdf asdf-asdf'
 )
 
