@@ -30,7 +30,7 @@ export default abstract class Command {
 			proc.stderr.pipe(process.stdout)
 		}
 
-		if (options?.readFromStdin) {
+		if (options?.readFromStdin && proc.exitCode === null) {
 			process.stdin.pipe(process.stdin)
 		}
 
