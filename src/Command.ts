@@ -25,7 +25,7 @@ export default abstract class Command {
 			[args]
 		)
 
-		if (options?.outputToStdout) {
+		if (options?.outputToStdout && proc.exitCode === null) {
 			proc.stdout.pipe(process.stdout)
 			proc.stderr.pipe(process.stdout)
 		}
