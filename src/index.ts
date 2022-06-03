@@ -53,4 +53,17 @@ export default class Pacman {
 
 		return command.toString()
 	}
+
+	refresh(force?: boolean, runOptions?: RunOptions) {
+		const command = this.makePacmanCommand({
+			operation: 'install',
+			options: [force ? 'forceRefresh' : 'refresh'],
+		})
+
+		if (runOptions?.run) {
+			return command.run(runOptions)
+		}
+
+		return command.toString()
+	}
 }
