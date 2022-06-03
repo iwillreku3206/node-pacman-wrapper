@@ -27,6 +27,7 @@ export default abstract class Command {
 
 		if (options?.outputToStdout) {
 			proc.stdout.pipe(process.stdout)
+			proc.stderr.pipe(process.stdout)
 		}
 
 		if (options?.readFromStdin) {
