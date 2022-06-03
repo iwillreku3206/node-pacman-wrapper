@@ -13,11 +13,11 @@ export default class PacstrapCommand extends Command {
 		this.packages = packages
 	}
 
-	toString(): string {
-		return `${this.pacman.pacstrapDirectory} ${this.toArgs()}}`
+	toString() {
+		return `${this.pacman.pacstrapDirectory} ${this.toArgs().join(' ')}}`
 	}
 
-	toArgs(): string {
-		return `${this.mountPoint} ${this.packages.join(' ')}`
+	toArgs() {
+		return [this.mountPoint, this.packages.join(' ')]
 	}
 }

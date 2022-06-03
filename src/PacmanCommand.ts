@@ -165,15 +165,22 @@ export default class PacmanCommand extends Command {
 	}
 
 	toString() {
-		return `${this.pacman.pacmanDirectory} ${this.toArgs()}`
+		return `${this.pacman.pacmanDirectory} ${this.toArgs().join(' ')}`
 	}
 
 	toArgs() {
-		const hasOpts =
-			this.opts?.filter((opt) => opt !== undefined).length || 0 > 1
+		const args = [
+			`-${this.operation.shortcut}${
+				this.shorthandOpts?.map((o) => o?.shortcut || '').join('') || ''
+			}`,
+		]
 
-		return `-${this.operation.shortcut}${
-			this.shorthandOpts?.map((o) => o?.shortcut || '').join('') || ''
-		}${this.opts?.map((o) => o?.argument || '').join(' ') || ''} ${this.data}`
+		this.opts &&
+			(this.opts?.map((o) => o?.argument || '') || []).map((item) =>
+				args.push(item)
+			)
+		this.data && args.push(this.data)
+
+		return args
 	}
 }

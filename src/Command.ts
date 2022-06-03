@@ -12,7 +12,7 @@ export default abstract class Command {
 	}
 
 	abstract toString(): string
-	abstract toArgs(): string
+	abstract toArgs(): string[]
 
 	run(options?: RunOptions) {
 		if (!this.pacman.canRun) throw new Error('Insufficient permissions to run.')
@@ -25,7 +25,7 @@ export default abstract class Command {
 			this.command === 'pacman'
 				? this.pacman.pacmanDirectory
 				: this.pacman.pacstrapDirectory,
-			[args]
+			args
 		)
 
 		if (options?.outputToStdout && proc.exitCode === null) {
