@@ -1,5 +1,5 @@
 import os from 'os'
-import Command from './Command'
+import Command, { CommandConstructorOptions } from './PacmanCommand'
 
 export default class Pacman {
 	canRun: boolean
@@ -11,6 +11,18 @@ export default class Pacman {
 		// Check if uid is root
 		const uid = os.userInfo().uid
 		this.canRun = uid === 0
+	}
+
+	setPacmanDirectory(directory: string) {
+		this.pacmanDirectory = directory
+	}
+
+	setPacstrapDirectory(directory: string) {
+		this.pacstrapDirectory = directory
+	}
+
+	makeCommand(options: CommandConstructorOptions, data?: string) {
+		return new Command(this, options, data)
 	}
 }
 

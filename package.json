@@ -5,7 +5,14 @@
 	"repository": "https://github.com/iwillreku3206/node-pacman-wrapper",
 	"author": "iwillreku3206 <37181282+iwillreku3206@users.noreply.github.com>",
 	"license": "MIT",
-	"private": false,
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"keywords": [
+		"pacman",
+		"linux",
+		"wrapper",
+		"node"
+	],
 	"devDependencies": {
 		"@types/jest": "^27.5.1",
 		"@types/node": "^17.0.33",
