@@ -169,8 +169,11 @@ export default class PacmanCommand extends Command {
 	}
 
 	toArgs() {
+		const hasOpts =
+			this.opts?.filter((opt) => opt !== undefined).length || 0 > 1
+
 		return `-${this.operation.shortcut}${
 			this.shorthandOpts?.map((o) => o?.shortcut || '').join('') || ''
-		} ${this.opts?.map((o) => o?.argument || '').join(' ') || ''} ${this.data}`
+		}${this.opts?.map((o) => o?.argument || '').join(' ') || ''} ${this.data}`
 	}
 }
