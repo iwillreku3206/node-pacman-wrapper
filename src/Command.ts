@@ -34,7 +34,7 @@ export default abstract class Command {
 		}
 
 		if (options?.readFromStdin && proc.exitCode === null) {
-			process.stdin.pipe(process.stdin)
+			process.stdin.pipe(proc.stdin)
 		}
 
 		return proc
